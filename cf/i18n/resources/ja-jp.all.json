@@ -4180,6 +4180,10 @@
     "translation": "組織の情報およびレポートに対する読み取り専用アクセス\n"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Really delete orphaned routes?{{.Prompt}}",
     "translation": "孤立した経路を削除しますか?{{.Prompt}}"
   },

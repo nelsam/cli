@@ -4180,6 +4180,10 @@
     "translation": "Lesezugriff auf Organisationsinformationen und auf Berichte\n"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Really delete orphaned routes?{{.Prompt}}",
     "translation": "Sollen verwaiste Routen wirklich gelöscht werden?{{.Prompt}}"
   },

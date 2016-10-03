@@ -4180,6 +4180,10 @@
     "translation": "对组织信息和报告具有只读访问权\n"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Really delete orphaned routes?{{.Prompt}}",
     "translation": "真的要删除孤立的路径吗？{{.Prompt}}"
   },

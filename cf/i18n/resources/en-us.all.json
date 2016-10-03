@@ -4180,6 +4180,10 @@
     "translation": "Read-only access to org info and reports\n"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Really delete orphaned routes?{{.Prompt}}",
     "translation": "Really delete orphaned routes?{{.Prompt}}"
   },

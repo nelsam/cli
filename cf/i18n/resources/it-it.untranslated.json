@@ -840,6 +840,10 @@
     "translation": "QUOTA"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Repository: ",
     "translation": "Repository: "
   },

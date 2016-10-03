@@ -1324,6 +1324,10 @@
     "translation": "ROUTE_PATH"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Route and domain management:",
     "translation": "Route and domain management:"
   },

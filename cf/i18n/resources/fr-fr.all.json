@@ -4180,6 +4180,10 @@
     "translation": "Accès en lecture seule aux informations et aux rapports de l'organisation\n"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Really delete orphaned routes?{{.Prompt}}",
     "translation": "Voulez-vous vraiment supprimer les routes orphelines ? {{.Prompt}}"
   },

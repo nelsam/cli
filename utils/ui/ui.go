@@ -137,10 +137,13 @@ func (ui UI) DisplayPair(attribute string, formattedString string, keys ...map[s
 }
 
 // DisplayPrompt outputs the prompt, then waits for user input.
-func (ui UI) DisplayPrompt(prompt string) {
+func (ui UI) DisplayPrompt(prompt string) (string, error) {
 	var response string
-	fullPrompt := fmt.Sprintf("%s%s\n", prompt, ui.colorize(">>", cyan, true))
-	interact.NewInteraction(fullPrompt).Resolve(interact.Required(&response))
+	fullPrompt := fmt.Sprintf("%s%s", prompt, ui.colorize(">>", cyan, true))
+	interactivePrompt := interact.NewInteraction(fullPrompt)
+	interactivePrompt.Output = ui.Out
+	err := interactivePrompt.Resolve(interact.Required(&response))
+	return response, err
 }
 
 // DisplayHelpHeader translates and then bolds the help header. Sends output to

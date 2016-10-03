@@ -4180,6 +4180,10 @@
     "translation": "唯讀存取組織資訊及報告\n"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Really delete orphaned routes?{{.Prompt}}",
     "translation": "真的要刪除遺留的路徑嗎？{{.Prompt}}"
   },

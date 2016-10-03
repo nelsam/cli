@@ -4180,6 +4180,10 @@
     "translation": "조직 정보 및 보고서에 대한 읽기 전용 액세스\n"
   },
   {
+    "id": "Really delete orphaned routes?",
+    "translation": ""
+  },
+  {
     "id": "Really delete orphaned routes?{{.Prompt}}",
     "translation": "고아인 라우트를 삭제하시겠습니까?{{.Prompt}}"
   },
