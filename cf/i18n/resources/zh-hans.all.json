@@ -328,6 +328,10 @@
     "translation": "应用程序 {{.AppName}} 已绑定到 {{.ServiceName}}。"
   },
   {
+    "id": "App {{.AppName}} not found",
+    "translation": ""
+  },
+  {
     "id": "Append API request diagnostics to a log file",
     "translation": "将 API 请求诊断附加到日志文件"
   },
@@ -4610,6 +4614,10 @@
   {
     "id": "Service instance {{.ServiceInstanceName}} does not exist.",
     "translation": "服务实例 {{.ServiceInstanceName}} 不存在。"
+  },
+  {
+    "id": "Service instance {{.ServiceInstance}} not found",
+    "translation": ""
   },
   {
     "id": "Service instance: {{.ServiceName}}",

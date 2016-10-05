@@ -328,6 +328,10 @@
     "translation": "アプリ {{.AppName}} は既に {{.ServiceName}} にバインドされています。"
   },
   {
+    "id": "App {{.AppName}} not found",
+    "translation": ""
+  },
+  {
     "id": "Append API request diagnostics to a log file",
     "translation": "API 要求診断をログ・ファイルに付加します"
   },
@@ -4610,6 +4614,10 @@
   {
     "id": "Service instance {{.ServiceInstanceName}} does not exist.",
     "translation": "サービス・インスタンス {{.ServiceInstanceName}} が存在していません。"
+  },
+  {
+    "id": "Service instance {{.ServiceInstance}} not found",
+    "translation": ""
   },
   {
     "id": "Service instance: {{.ServiceName}}",

@@ -328,6 +328,10 @@
     "translation": "{{.AppName}} 앱이 이미 {{.ServiceName}}에 바인딩되어 있습니다."
   },
   {
+    "id": "App {{.AppName}} not found",
+    "translation": ""
+  },
+  {
     "id": "Append API request diagnostics to a log file",
     "translation": "로그 파일에 API 요청 진단 추가"
   },
@@ -4610,6 +4614,10 @@
   {
     "id": "Service instance {{.ServiceInstanceName}} does not exist.",
     "translation": "서비스 인스턴스 {{.ServiceInstanceName}}이(가) 없습니다."
+  },
+  {
+    "id": "Service instance {{.ServiceInstance}} not found",
+    "translation": ""
   },
   {
     "id": "Service instance: {{.ServiceName}}",

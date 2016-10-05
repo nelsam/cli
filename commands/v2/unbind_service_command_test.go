@@ -1,10 +1,12 @@
 package v2_test
 
 import (
-	"code.cloudfoundry.org/cli/actors"
-	"code.cloudfoundry.org/cli/api/cloudcontrollerv2"
+	"errors"
+
+	"code.cloudfoundry.org/cli/actors/v2actions"
 	"code.cloudfoundry.org/cli/commands/commandsfakes"
 	. "code.cloudfoundry.org/cli/commands/v2"
+	"code.cloudfoundry.org/cli/commands/v2/common"
 	"code.cloudfoundry.org/cli/commands/v2/v2fakes"
 	"code.cloudfoundry.org/cli/utils/configv3"
 	"code.cloudfoundry.org/cli/utils/ui"
@@ -17,7 +19,7 @@ import (
 var _ = Describe("Unbind Service Command", func() {
 	var (
 		cmd        UnbindServiceCommand
-		fakeUI     ui.UI
+		fakeUI     *ui.UI
 		fakeActor  *v2fakes.FakeUnbindServiceActor
 		fakeConfig *commandsfakes.FakeConfig
 		executeErr error
@@ -37,66 +39,22 @@ var _ = Describe("Unbind Service Command", func() {
 	})
 
 	JustBeforeEach(func() {
-		executeErr = cmd.Execute([]string{})
+		executeErr = cmd.Execute(nil)
 	})
 
-	Describe("command prerequisite failures", func() {
-		Context("when the api endpoint is not set", func() {
-			It("returns an error", func() {
-				Expect(executeErr).To(MatchError(NoAPISetError{
-					LoginCommand: "cf login",
-					APICommand:   "cf api",
-				}))
-			})
+	Context("when checking that the api endpoint is set, the user is logged in, and an org and space are targeted", func() {
+		BeforeEach(func() {
+			fakeConfig.BinaryNameReturns("faceman")
 		})
 
-		Context("when the api endpoint is set", func() {
-			BeforeEach(func() {
-				fakeConfig.TargetReturns("some-url")
-			})
-
-			Context("when the user is not logged in", func() {
-				It("returns an error", func() {
-					Expect(executeErr).To(MatchError(NotLoggedInError{
-						LoginCommand: "cf login",
-					}))
-				})
-			})
-
-			Context("when the user is logged in", func() {
-				BeforeEach(func() {
-					fakeConfig.AccessTokenReturns("some-access-token")
-					fakeConfig.RefreshTokenReturns("some-refresh-token")
-				})
-
-				Context("when an org is not targeted", func() {
-					It("should return an error", func() {
-						Expect(executeErr).To(MatchError(NoTargetedOrgError{
-							TargetCommand: "cf target",
-						}))
-					})
-
-					Context("when an org is targeted", func() {
-						BeforeEach(func() {
-							fakeConfig.TargetedOrganizationReturns(configv3.Organization{
-								GUID: "some-org-guid",
-							})
-						})
-
-						Context("when a space is not targeted", func() {
-							It("should return an error", func() {
-								Expect(executeErr).To(MatchError(NoTargetedSpaceError{
-									TargetCommand: "cf target",
-								}))
-							})
-						})
-					})
-				})
-			})
+		It("returns an error if the check fails", func() {
+			Expect(executeErr).To(MatchError(common.NoAPISetError{
+				BinaryName: "faceman",
+			}))
 		})
 	})
 
-	Describe("no command prerequisite failures", func() {
+	Context("when the api endpoint is set, the user is logged in, and an org and space are targeted", func() {
 		BeforeEach(func() {
 			fakeConfig.TargetReturns("some-url")
 			fakeConfig.AccessTokenReturns("some-access-token")
@@ -109,124 +67,78 @@ var _ = Describe("Unbind Service Command", func() {
 				GUID: "some-space-guid",
 				Name: "some-space",
 			})
-			fakeConfig.CurrentUserReturns(configv3.User{
-				Name: "some-user",
-			}, nil)
 
 			cmd.RequiredArgs.AppName = "some-app"
-			cmd.RequiredArgs.ServiceInstance = "some-service"
+			cmd.RequiredArgs.ServiceInstanceName = "some-service"
 		})
 
-		Context("when the app does not exist", func() {
-			var appNotFoundErr AppNotFoundError
+		Context("when getting the logged in user results in an error", func() {
+			var expectedErr error
 
 			BeforeEach(func() {
-				fakeActor.GetAppReturns(actors.Application{}, appNotFoundErr)
+				expectedErr = errors.New("got bananapants??")
+				fakeConfig.CurrentUserReturns(configv3.User{}, expectedErr)
 			})
 
-			It("returns an error", func() {
-				Expect(executeErr).To(MatchError(appNotFoundErr))
-
-				Expect(fakeActor.GetAppCallCount()).To(Equal(1))
-				Expect(fakeActor.GetAppArgsForCall(0)).To(Equal(
-					[]cloudcontrollerv2.Query{
-						cloudcontrollerv2.Query{
-							Filter:   "name",
-							Operator: ":",
-							Value:    "some-app",
-						},
-						cloudcontrollerv2.Query{
-							Filter:   "space_guid",
-							Operator: ":",
-							Value:    "some-space-guid",
-						},
-					}))
+			It("returns the same error", func() {
+				Expect(executeErr).To(MatchError(expectedErr))
 			})
 		})
 
-		Context("when the app does exist", func() {
+		Context("when getting the logged in user does not result in an error", func() {
 			BeforeEach(func() {
-				fakeActor.GetAppReturns(actors.Application{
-					GUID: "some-app-guid",
-					Name: "some-app",
+				fakeConfig.CurrentUserReturns(configv3.User{
+					Name: "some-user",
 				}, nil)
 			})
 
-			Context("when the service does not exist", func() {
-				var serviceInstanceNotFoundErr ServiceInstanceNotFoundError
+			It("displays flavor text", func() {
+				Expect(executeErr).ToNot(HaveOccurred())
 
+				Expect(fakeUI.Out).To(Say("Unbinding app some-app from service some-service in org some-org / space some-space as some-user..."))
+			})
+
+			Context("when unbinding the service instance results in an error not related to service binding", func() {
 				BeforeEach(func() {
-					fakeActor.GetServiceInstanceReturns(actors.ServiceInstance{}, serviceInstanceNotFoundErr)
+					fakeActor.UnbindServiceBySpaceReturns(nil, v2actions.ApplicationNotFoundError{
+						Name: "some-app",
+					})
 				})
 
-				It("returns an error", func() {
-					Expect(executeErr).To(MatchError(serviceInstanceNotFoundErr))
-
-					Expect(fakeActor.GetServiceInstanceCallCount()).To(Equal(1))
-					Expect(fakeActor.GetServiceInstanceArgsForCall(0)).To(Equal(
-						[]cloudcontrollerv2.Query{
-							cloudcontrollerv2.Query{
-								Filter:   "name",
-								Operator: ":",
-								Value:    "some-service",
-							},
-							cloudcontrollerv2.Query{
-								Filter:   "space_guid",
-								Operator: ":",
-								Value:    "some-space-guid",
-							},
-						}))
+				It("should return the error", func() {
+					Expect(executeErr).To(MatchError(common.ApplicationNotFoundError{
+						Name: "some-app",
+					}))
 				})
 			})
 
-			Context("when the service exist", func() {
+			Context("when the service binding does not exist", func() {
 				BeforeEach(func() {
-					fakeActor.GetServiceInstanceReturns(actors.ServiceInstance{
-						GUID: "some-service-guid",
-						Name: "some-service",
-					}, nil)
+					fakeActor.UnbindServiceBySpaceReturns([]string{"foo", "bar"}, v2actions.ServiceBindingNotFoundError{})
 				})
 
-				Context("when a binding between the app and the service does not exist", func() {
-					var serviceBindingNotFoundErr ServiceBindingNotFoundError
+				It("displays warnings and 'OK'", func() {
+					Expect(executeErr).NotTo(HaveOccurred())
 
-					BeforeEach(func() {
-						fakeActor.GetServiceBindingReturns(actors.ServiceBinding{}, serviceBindingNotFoundErr)
-					})
-
-					It("returns an error", func() {
-						Expect(executeErr).To(MatchError(serviceBindingNotFoundErr))
-
-						Expect(fakeActor.GetServiceBindingCallCount()).To(Equal(1))
-						Expect(fakeActor.GetServiceBindingArgsForCall(0)).To(Equal(
-							[]cloudcontrollerv2.Query{
-								cloudcontrollerv2.Query{
-									Filter:   "app_guid",
-									Operator: ":",
-									Value:    "some-app-guid",
-								},
-								cloudcontrollerv2.Query{
-									Filter:   "service_instance_guid",
-									Operator: ":",
-									Value:    "some-service-guid",
-								},
-							}))
-					})
+					Expect(fakeUI.Err).To(Say("foo"))
+					Expect(fakeUI.Err).To(Say("bar"))
+					Expect(fakeUI.Err).To(Say("Binding between some-service and some-app did not exist"))
+					Expect(fakeUI.Out).To(Say("OK"))
 				})
+			})
 
-				Context("when a binding between the app and the service exist", func() {
-					BeforeEach(func() {
-						fakeActor.GetServiceBindingReturns(actors.ServiceBinding{
-							GUID: "some-binding-guid",
-						}, nil)
-					})
+			Context("when the service binding exists", func() {
+				It("displays OK", func() {
+					Expect(executeErr).ToNot(HaveOccurred())
 
-					It("displays the unbinding was successful", func() {
-						Expect(executeErr).NotTo(HaveOccurred())
+					Expect(fakeUI.Out).To(Say("OK"))
+					Expect(fakeUI.Err).NotTo(Say("Binding between some-service and some-app did not exist"))
 
-						Expect(fakeUI.Out).To(Say("Unbinding app some-app from service some-service in org some-org / space some-space as some-user..."))
-						Eventually(fakeUI.Out).Should(Say("OK"))
-					})
+					Expect(fakeActor.UnbindServiceBySpaceCallCount()).To(Equal(1))
+					appName, serviceInstanceName, spaceGUID := fakeActor.UnbindServiceBySpaceArgsForCall(0)
+					Expect(appName).To(Equal("some-app"))
+					Expect(serviceInstanceName).To(Equal("some-service"))
+					Expect(spaceGUID).To(Equal("some-space-guid"))
 				})
 			})
 		})

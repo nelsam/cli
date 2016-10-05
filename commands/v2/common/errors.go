@@ -35,13 +35,13 @@ type NoAPISetError struct {
 }
 
 func (e NoAPISetError) Error() string {
-	return "No API endpoint set. Use '{{.LoginCommand}}' or '{{.ApiCommand}}' to target an endpoint."
+	return "No API endpoint set. Use '{{.LoginTip}}' or '{{.APITip}}' to target an endpoint."
 }
 
 func (e NoAPISetError) Translate(translate func(string, ...interface{}) string) string {
 	return translate(e.Error(), map[string]interface{}{
-		"LoginCommand": fmt.Sprintf("%s login", e.BinaryName),
-		"ApiCommand":   fmt.Sprintf("%s api", e.BinaryName),
+		"LoginTip": fmt.Sprintf("%s login", e.BinaryName),
+		"APITip":   fmt.Sprintf("%s api", e.BinaryName),
 	})
 }
 
@@ -50,12 +50,12 @@ type NotLoggedInError struct {
 }
 
 func (e NotLoggedInError) Error() string {
-	return "Not logged in. Use '{{.LoginCommand}}' to log in."
+	return "Not logged in. Use '{{.CFLoginCommand}}' to log in."
 }
 
 func (e NotLoggedInError) Translate(translate func(string, ...interface{}) string) string {
 	return translate(e.Error(), map[string]interface{}{
-		"LoginCommand": fmt.Sprintf("%s login", e.BinaryName),
+		"CFLoginCommand": fmt.Sprintf("%s login", e.BinaryName),
 	})
 }
 
@@ -64,12 +64,12 @@ type NoTargetedOrgError struct {
 }
 
 func (e NoTargetedOrgError) Error() string {
-	return "No org targeted. Use '{{.TargetCommand}}' to target an org."
+	return "No org targeted, use '{{.Command}}' to target an org."
 }
 
 func (e NoTargetedOrgError) Translate(translate func(string, ...interface{}) string) string {
 	return translate(e.Error(), map[string]interface{}{
-		"TargetCommand": fmt.Sprintf("%s login", e.BinaryName),
+		"Command": fmt.Sprintf("%s login", e.BinaryName),
 	})
 }
 
@@ -78,31 +78,31 @@ type NoTargetedSpaceError struct {
 }
 
 func (e NoTargetedSpaceError) Error() string {
-	return "No space targeted. Use '{{.TargetCommand}}' to target a space."
+	return "No space targeted, use '{{.Command}}' to target a space"
 }
 
 func (e NoTargetedSpaceError) Translate(translate func(string, ...interface{}) string) string {
 	return translate(e.Error(), map[string]interface{}{
-		"TargetCommand": fmt.Sprintf("%s login", e.BinaryName),
+		"Command": fmt.Sprintf("%s login", e.BinaryName),
 	})
 }
 
-type AppNotFoundError struct {
-	AppName string
+type ApplicationNotFoundError struct {
+	Name string
 }
 
-func (e AppNotFoundError) Error() string {
+func (e ApplicationNotFoundError) Error() string {
 	return "App {{.AppName}} not found"
 }
 
-func (e AppNotFoundError) Translate(translate func(string, ...interface{}) string) string {
+func (e ApplicationNotFoundError) Translate(translate func(string, ...interface{}) string) string {
 	return translate(e.Error(), map[string]interface{}{
-		"AppName": e.AppName,
+		"AppName": e.Name,
 	})
 }
 
 type ServiceInstanceNotFoundError struct {
-	ServiceInstance string
+	Name string
 }
 
 func (e ServiceInstanceNotFoundError) Error() string {
@@ -111,22 +111,6 @@ func (e ServiceInstanceNotFoundError) Error() string {
 
 func (e ServiceInstanceNotFoundError) Translate(translate func(string, ...interface{}) string) string {
 	return translate(e.Error(), map[string]interface{}{
-		"ServiceInstance": e.ServiceInstance,
-	})
-}
-
-type ServiceBindingNotFoundError struct {
-	AppName         string
-	ServiceInstance string
-}
-
-func (e ServiceBindingNotFoundError) Error() string {
-	return "Binding between {{.ServiceInstance}} and {{.AppName}} did not exist"
-}
-
-func (e ServiceBindingNotFoundError) Translate(translate func(string, ...interface{}) string) string {
-	return translate(e.Error(), map[string]interface{}{
-		"AppName":         e.AppName,
-		"ServiceInstance": e.ServiceInstance,
+		"ServiceInstance": e.Name,
 	})
 }

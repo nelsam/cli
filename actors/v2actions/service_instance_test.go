@@ -49,13 +49,13 @@ var _ = Describe("Service Instance Actions", func() {
 				Expect(fakeCloudControllerClient.GetServiceInstancesCallCount()).To(Equal(1))
 				Expect(fakeCloudControllerClient.GetServiceInstancesArgsForCall(0)).To(ConsistOf([]cloudcontrollerv2.Query{
 					cloudcontrollerv2.Query{
-						Filter:   "name",
-						Operator: ":",
+						Filter:   cloudcontrollerv2.NameFilter,
+						Operator: cloudcontrollerv2.EqualOperator,
 						Value:    "some-service-instance",
 					},
 					cloudcontrollerv2.Query{
-						Filter:   "space_guid",
-						Operator: ":",
+						Filter:   cloudcontrollerv2.SpaceGUIDFilter,
+						Operator: cloudcontrollerv2.EqualOperator,
 						Value:    "some-space-guid",
 					},
 				}))

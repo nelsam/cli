@@ -22,13 +22,13 @@ func (e ServiceInstanceNotFoundError) Error() string {
 func (actor Actor) GetServiceInstanceBySpace(name string, spaceGUID string) (ServiceInstance, Warnings, error) {
 	serviceInstances, warnings, err := actor.CloudControllerClient.GetServiceInstances([]cloudcontrollerv2.Query{
 		cloudcontrollerv2.Query{
-			Filter:   "name",
-			Operator: ":",
+			Filter:   cloudcontrollerv2.NameFilter,
+			Operator: cloudcontrollerv2.EqualOperator,
 			Value:    name,
 		},
 		cloudcontrollerv2.Query{
-			Filter:   "space_guid",
-			Operator: ":",
+			Filter:   cloudcontrollerv2.SpaceGUIDFilter,
+			Operator: cloudcontrollerv2.EqualOperator,
 			Value:    spaceGUID,
 		},
 	})

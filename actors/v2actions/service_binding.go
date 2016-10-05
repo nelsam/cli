@@ -22,13 +22,13 @@ func (e ServiceBindingNotFoundError) Error() string {
 func (actor Actor) GetServiceBindingByApplicationAndServiceInstance(appGUID string, serviceInstanceGUID string) (ServiceBinding, Warnings, error) {
 	serviceBindings, warnings, err := actor.CloudControllerClient.GetServiceBindings([]cloudcontrollerv2.Query{
 		cloudcontrollerv2.Query{
-			Filter:   "app_guid",
-			Operator: ":",
+			Filter:   cloudcontrollerv2.AppGUIDFilter,
+			Operator: cloudcontrollerv2.EqualOperator,
 			Value:    appGUID,
 		},
 		cloudcontrollerv2.Query{
-			Filter:   "service_instance_guid",
-			Operator: ":",
+			Filter:   cloudcontrollerv2.ServiceInstanceGUIDFilter,
+			Operator: cloudcontrollerv2.EqualOperator,
 			Value:    serviceInstanceGUID,
 		},
 	})

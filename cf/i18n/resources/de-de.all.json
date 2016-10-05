@@ -328,6 +328,10 @@
     "translation": "App {{.AppName}} ist bereits an {{.ServiceName}} gebunden."
   },
   {
+    "id": "App {{.AppName}} not found",
+    "translation": ""
+  },
+  {
     "id": "Append API request diagnostics to a log file",
     "translation": "Anhängen des Diagnoseprogramms für API-Anforderungen an eine Protokolldatei"
   },
@@ -4610,6 +4614,10 @@
   {
     "id": "Service instance {{.ServiceInstanceName}} does not exist.",
     "translation": "Serviceinstanz {{.ServiceInstanceName}} ist nicht vorhanden."
+  },
+  {
+    "id": "Service instance {{.ServiceInstance}} not found",
+    "translation": ""
   },
   {
     "id": "Service instance: {{.ServiceName}}",

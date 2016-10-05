@@ -60,6 +60,10 @@
     "translation": "App "
   },
   {
+    "id": "App {{.AppName}} not found",
+    "translation": ""
+  },
+  {
     "id": "Application lifecycle:",
     "translation": "Application lifecycle:"
   },
@@ -1350,6 +1354,10 @@
   {
     "id": "Service instance",
     "translation": "Service instance"
+  },
+  {
+    "id": "Service instance {{.ServiceInstance}} not found",
+    "translation": ""
   },
   {
     "id": "Service offering",

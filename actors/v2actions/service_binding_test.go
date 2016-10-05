@@ -47,13 +47,13 @@ var _ = Describe("Service Binding Actions", func() {
 				Expect(fakeCloudControllerClient.GetServiceBindingsCallCount()).To(Equal(1))
 				Expect(fakeCloudControllerClient.GetServiceBindingsArgsForCall(0)).To(ConsistOf([]cloudcontrollerv2.Query{
 					cloudcontrollerv2.Query{
-						Filter:   "app_guid",
-						Operator: ":",
+						Filter:   cloudcontrollerv2.AppGUIDFilter,
+						Operator: cloudcontrollerv2.EqualOperator,
 						Value:    "some-app-guid",
 					},
 					cloudcontrollerv2.Query{
-						Filter:   "service_instance_guid",
-						Operator: ":",
+						Filter:   cloudcontrollerv2.ServiceInstanceGUIDFilter,
+						Operator: cloudcontrollerv2.EqualOperator,
 						Value:    "some-service-instance-guid",
 					},
 				}))

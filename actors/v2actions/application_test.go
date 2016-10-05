@@ -49,13 +49,13 @@ var _ = Describe("Application Actions", func() {
 				Expect(fakeCloudControllerClient.GetApplicationsCallCount()).To(Equal(1))
 				Expect(fakeCloudControllerClient.GetApplicationsArgsForCall(0)).To(ConsistOf([]cloudcontrollerv2.Query{
 					cloudcontrollerv2.Query{
-						Filter:   "name",
-						Operator: ":",
+						Filter:   cloudcontrollerv2.NameFilter,
+						Operator: cloudcontrollerv2.EqualOperator,
 						Value:    "some-app",
 					},
 					cloudcontrollerv2.Query{
-						Filter:   "space_guid",
-						Operator: ":",
+						Filter:   cloudcontrollerv2.SpaceGUIDFilter,
+						Operator: cloudcontrollerv2.EqualOperator,
 						Value:    "some-space-guid",
 					},
 				}))
