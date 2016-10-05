@@ -30,6 +30,7 @@ var _ = Describe("Unbind Service Command", func() {
 		fakeUI = ui.NewTestUI(out, out)
 		fakeActor = new(v2fakes.FakeUnbindServiceActor)
 		fakeConfig = new(commandsfakes.FakeConfig)
+		fakeConfig.ExperimentalReturns(true)
 
 		cmd = UnbindServiceCommand{
 			UI:     fakeUI,

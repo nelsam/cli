@@ -1,7 +1,10 @@
 package v2
 
 import (
+	"os"
+
 	"code.cloudfoundry.org/cli/actors/v2actions"
+	oldCmd "code.cloudfoundry.org/cli/cf/cmd"
 	"code.cloudfoundry.org/cli/commands"
 	"code.cloudfoundry.org/cli/commands/flags"
 	"code.cloudfoundry.org/cli/commands/v2/common"
@@ -37,6 +40,14 @@ func (cmd UnbindServiceCommand) Setup(config commands.Config, ui commands.UI) er
 }
 
 func (cmd UnbindServiceCommand) Execute(args []string) error {
+	if cmd.Config.Experimental() == false {
+		oldCmd.Main(os.Getenv("CF_TRACE"), os.Args)
+		return nil
+	}
+
+	cmd.UI.DisplayText("This command is in EXPERIMENTAL stage and may change without notice")
+	cmd.UI.DisplayNewline()
+
 	err := common.CheckTarget(cmd.Config, true, true)
 	if err != nil {
 		return err
